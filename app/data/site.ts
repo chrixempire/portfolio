@@ -66,7 +66,7 @@ export const techStack = [
 
 export const experience = [
   {
-    dates: 'April 2025  –  August 2026',
+    dates: 'April 2025  –  Present',
     role: 'Frontend Engineer, Acumen Digital, Lagos',
     logo: '/icons/companies/acumen.png',
     logoInset: true,
