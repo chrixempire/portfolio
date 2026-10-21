@@ -9,6 +9,7 @@
       <AppHeader />
       <NuxtPage />
     </div>
+    <Toaster />
   </div>
 </template>
 

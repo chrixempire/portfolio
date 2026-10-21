@@ -7,10 +7,12 @@
       @click="openSearch"
     >
       <label ref="bar" class="cmd__bar">
-        <svg class="cmd__loupe" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <circle cx="7.2" cy="7.2" r="4.4" stroke="currentColor" stroke-width="1.2" />
-          <path d="M10.4 10.4 13.6 13.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-        </svg>
+        <span ref="iconSlot" class="cmd__slot">
+          <svg class="cmd__loupe" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="m21 21-4.34-4.34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
         <input
           ref="input"
           v-model="query"
@@ -21,35 +23,65 @@
           spellcheck="false"
           @focus="openSearch"
         >
-        <span ref="keyChip" class="cmd__key">
-          <span ref="keyF" class="cmd__key-txt">F</span>
-          <span ref="keyEsc" class="cmd__key-txt">Esc</span>
+        <span ref="keySlot" class="cmd__slot cmd__slot--key">
+          <span class="cmd__key">{{ open ? 'Esc' : 'F' }}</span>
         </span>
       </label>
+      <div class="cmd__rule" />
 
-      <div ref="panel" class="cmd__body">
+      <div class="cmd__border" />
+      <div ref="panel" class="cmd__body" data-lenis-prevent>
         <template v-for="(group, index) in visibleGroups" :key="group.label">
           <div v-if="index > 0" class="cmd__line" />
-          <p class="cmd__group">{{ group.label }}</p>
-          <button
-            v-for="item in group.items"
-            :key="item.id"
-            class="cmd__row"
-            :class="{ 'is-on': item.id === activeId }"
-            type="button"
-            @mouseenter="activeId = item.id"
-            @click.stop="choose(item)"
-          >
-            <svg v-if="item.icon === 'arrow'" class="cmd__glyph" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M2.8 8h9.6M8.6 4.2 13 8l-4.4 3.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <svg v-else class="cmd__glyph" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.2" />
-              <path d="M8 2.6v1.3M8 12.1v1.3M2.6 8h1.3M12.1 8h1.3M4.1 4.1l.95.95M11 11l.95.95M4.1 11.9l.95-.95M11 5.05l.95-.95" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-            </svg>
-            <span class="cmd__name">{{ item.label }}</span>
-            <span v-if="item.shortcut" class="cmd__hot">{{ item.shortcut }}</span>
-          </button>
+          <div class="cmd__group">
+            <p class="cmd__label">{{ group.label }}</p>
+            <button
+              v-for="item in group.items"
+              :key="item.id"
+              class="cmd__row"
+              :class="{ 'is-on': item.id === activeId }"
+              type="button"
+              @mouseenter="activeId = item.id"
+              @click.stop="choose(item)"
+            >
+              <svg v-if="item.icon === 'arrow'" class="cmd__glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="m12 5 7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <svg v-else-if="item.icon === 'cog'" class="cmd__glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12 22v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="m17 20.66-1-1.73" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M11 10.27 7 3.34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="m20.66 17-1.73-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="m3.34 7 1.73 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M14 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M2 12h2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="m20.66 7-1.73 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="m3.34 17 1.73-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="m17 3.34-1 1.73" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="m11 13.73-4 6.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <svg v-else-if="item.icon === 'dashed'" class="cmd__glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M10.1 2.182a10 10 0 0 1 3.8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M13.9 21.818a10 10 0 0 1-3.8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M17.609 3.721a10 10 0 0 1 2.69 2.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M2.182 13.9a10 10 0 0 1 0-3.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M20.279 17.609a10 10 0 0 1-2.7 2.69" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M21.818 10.1a10 10 0 0 1 0 3.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M3.721 6.391a10 10 0 0 1 2.7-2.69" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M6.391 20.279a10 10 0 0 1-2.69-2.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <svg v-else class="cmd__glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 7v14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span class="cmd__name">{{ item.label }}</span>
+              <span v-if="item.shortcut" class="cmd__hot">{{ item.shortcut }}</span>
+            </button>
+          </div>
         </template>
       </div>
     </div>
@@ -57,11 +89,13 @@
 </template>
 
 <script setup lang="ts">
+import { toast } from '~/lib/toast'
+
 type Command = {
   id: string
   label: string
-  group: 'Suggestions' | 'Settings'
-  icon: 'arrow' | 'gear'
+  group: 'Suggestions' | 'Settings' | 'Help' | 'Docs'
+  icon: 'arrow' | 'cog' | 'dashed' | 'book'
   shortcut?: string
 }
 
@@ -72,20 +106,30 @@ const commands: Command[] = [
   { id: 'documents', label: 'Documents', group: 'Suggestions', icon: 'arrow' },
   { id: 'images', label: 'Images', group: 'Suggestions', icon: 'arrow' },
   { id: 'music', label: 'Music', group: 'Suggestions', icon: 'arrow' },
-  { id: 'profile', label: 'Profile', group: 'Settings', icon: 'gear', shortcut: '⌘P' }
+  { id: 'profile', label: 'Profile', group: 'Settings', icon: 'cog', shortcut: '⌘P' },
+  { id: 'billing', label: 'Billing', group: 'Settings', icon: 'cog', shortcut: '⌘B' },
+  { id: 'settings', label: 'Settings', group: 'Settings', icon: 'cog', shortcut: '⌘S' },
+  { id: 'notifications', label: 'Notifications', group: 'Settings', icon: 'cog', shortcut: '⌘N' },
+  { id: 'messages', label: 'Messages', group: 'Settings', icon: 'cog', shortcut: '⌘M' },
+  { id: 'security', label: 'Security', group: 'Settings', icon: 'cog', shortcut: '⌘T' },
+  { id: 'faq', label: 'FAQ', group: 'Help', icon: 'dashed' },
+  { id: 'support', label: 'Contact Support', group: 'Help', icon: 'dashed' },
+  { id: 'docs', label: 'Documentation', group: 'Docs', icon: 'book' },
+  { id: 'tutorials', label: 'Tutorials', group: 'Docs', icon: 'book' }
 ]
 
 const CLOSED_W = 192
 const CLOSED_H = 32
-const OPEN_W = 386
-const OPEN_BAR = 48
+const OPEN_W = 384
+const BAR_H = 48
+const RULE = 1
+const LIST_MAX = 300
 
 const box = ref<HTMLElement | null>(null)
 const bar = ref<HTMLElement | null>(null)
+const iconSlot = ref<HTMLElement | null>(null)
+const keySlot = ref<HTMLElement | null>(null)
 const panel = ref<HTMLElement | null>(null)
-const keyChip = ref<HTMLElement | null>(null)
-const keyF = ref<HTMLElement | null>(null)
-const keyEsc = ref<HTMLElement | null>(null)
 const input = ref<HTMLInputElement | null>(null)
 const open = ref(false)
 const query = ref('')
@@ -101,16 +145,22 @@ const filtered = computed(() => {
 
 const visibleGroups = computed(() => ([
   { label: 'Suggestions' as const, items: filtered.value.filter(item => item.group === 'Suggestions') },
-  { label: 'Settings' as const, items: filtered.value.filter(item => item.group === 'Settings') }
+  { label: 'Settings' as const, items: filtered.value.filter(item => item.group === 'Settings') },
+  { label: 'Help' as const, items: filtered.value.filter(item => item.group === 'Help') },
+  { label: 'Docs' as const, items: filtered.value.filter(item => item.group === 'Docs') }
 ]).filter(group => group.items.length))
 
 const ids = computed(() => filtered.value.map(item => item.id))
 
 watch(filtered, (items) => {
   if (!items.some(item => item.id === activeId.value)) activeId.value = items[0]?.id ?? ''
+  if (!open.value || !box.value || !$gsap) return
+  nextTick(() => {
+    $gsap.set(box.value, { height: openHeight() })
+  })
 })
 
-const openHeight = () => OPEN_BAR + (panel.value?.scrollHeight ?? 0)
+const openHeight = () => BAR_H + RULE + Math.min(panel.value?.scrollHeight ?? 0, LIST_MAX)
 
 const morph = (next: boolean) => {
   const gsap = $gsap
@@ -122,43 +172,21 @@ const morph = (next: boolean) => {
   const reduced = prefersReducedMotion()
   const duration = reduced ? 0 : next ? 0.42 : 0.32
   const ease = reduced ? 'none' : next ? 'back.out(0.55)' : 'power3.inOut'
-  const tl = gsap.timeline({
-    overwrite: 'auto',
-    onComplete: () => {
-      if (next && open.value && box.value) gsap.set(box.value, { height: 'auto' })
-    }
-  })
+  const tl = gsap.timeline({ overwrite: 'auto' })
   tween = tl
 
   tl.to(box.value, {
     width: next ? OPEN_W : CLOSED_W,
     height: next ? openHeight() : CLOSED_H,
-    borderRadius: next ? 16 : 6,
+    borderRadius: next ? 12 : 6,
     duration,
     ease
   }, 0)
 
-  if (bar.value) {
-    tl.to(bar.value, {
-      height: next ? OPEN_BAR : CLOSED_H,
-      paddingLeft: next ? 16 : 12,
-      paddingRight: next ? 16 : 8,
-      duration,
-      ease
-    }, 0)
-  }
-
-  if (keyChip.value && keyF.value && keyEsc.value) {
-    if (next) {
-      tl.set(keyF.value, { autoAlpha: 0 }, 0)
-      tl.set(keyEsc.value, { autoAlpha: 1 }, 0)
-      tl.to(keyChip.value, { width: 28, duration: reduced ? 0 : 0.18, ease: 'power2.out' }, 0)
-    } else {
-      tl.to(keyChip.value, { width: 18, duration: reduced ? 0 : 0.14, ease: 'power2.out' }, duration * 0.7)
-      tl.set(keyEsc.value, { autoAlpha: 0 }, duration * 0.75)
-      tl.set(keyF.value, { autoAlpha: 1 }, duration * 0.75)
-    }
-  }
+  const slot = next ? 48 : 32
+  if (bar.value) tl.to(bar.value, { height: next ? BAR_H : CLOSED_H, duration, ease }, 0)
+  if (iconSlot.value) tl.to(iconSlot.value, { width: slot, height: slot, duration, ease }, 0)
+  if (keySlot.value) tl.to(keySlot.value, { width: slot, height: slot, duration, ease }, 0)
 }
 
 const openSearch = () => {
@@ -179,12 +207,37 @@ const closeSearch = () => {
   input.value?.blur()
 }
 
-const choose = (_item: Command) => closeSearch()
+const choose = (item: Command) => {
+  closeSearch()
+  toast.add({ type: 'success', title: `Selected ${item.label}`, timeout: 3200 })
+}
+
+const revealActive = () => {
+  nextTick(() => {
+    const scroller = panel.value
+    const row = scroller?.querySelector('.cmd__row.is-on')
+    if (!scroller || !(row instanceof HTMLElement)) return
+    const scrollerRect = scroller.getBoundingClientRect()
+    const rowRect = row.getBoundingClientRect()
+    if (rowRect.top < scrollerRect.top) scroller.scrollTop -= scrollerRect.top - rowRect.top
+    else if (rowRect.bottom > scrollerRect.bottom) scroller.scrollTop += rowRect.bottom - scrollerRect.bottom
+  })
+}
 
 const move = (delta: number) => {
   if (!ids.value.length) return
   const index = Math.max(0, ids.value.indexOf(activeId.value))
   activeId.value = ids.value[(index + delta + ids.value.length) % ids.value.length]
+  revealActive()
+}
+
+const onWheel = (event: WheelEvent) => {
+  const scroller = panel.value
+  if (!open.value || !scroller || !scroller.contains(event.target as Node)) return
+  if (scroller.scrollHeight <= scroller.clientHeight) return
+  event.preventDefault()
+  event.stopPropagation()
+  scroller.scrollTop += event.deltaY
 }
 
 const onKey = (event: KeyboardEvent) => {
@@ -215,30 +268,30 @@ const onPointer = (event: PointerEvent) => {
 onMounted(() => {
   const gsap = $gsap
   gsap?.set(box.value, {
-    xPercent: -50,
+    x: -CLOSED_W / 2,
     width: CLOSED_W,
     height: CLOSED_H,
     borderRadius: 6
   })
-  gsap?.set(bar.value, { height: CLOSED_H, paddingLeft: 12, paddingRight: 8 })
-  gsap?.set(keyChip.value, { width: 18 })
-  gsap?.set(keyEsc.value, { autoAlpha: 0 })
-  gsap?.set(keyF.value, { autoAlpha: 1 })
+  gsap?.set(bar.value, { height: CLOSED_H })
+  gsap?.set([iconSlot.value, keySlot.value], { width: 32, height: 32 })
   window.addEventListener('keydown', onKey)
   document.addEventListener('pointerdown', onPointer)
+  panel.value?.addEventListener('wheel', onWheel, { passive: false })
 })
 
 onBeforeUnmount(() => {
   tween?.kill()
   window.removeEventListener('keydown', onKey)
   document.removeEventListener('pointerdown', onPointer)
+  panel.value?.removeEventListener('wheel', onWheel)
 })
 </script>
 
 <style scoped>
 .cmd-root {
   position: relative;
-  width: 386px;
+  width: 192px;
   height: 32px;
 }
 
@@ -251,125 +304,195 @@ onBeforeUnmount(() => {
   height: 32px;
   overflow: hidden;
   background: #121212;
-  border: 1px solid #2a2a2a;
   border-radius: 6px;
   color: #ededed;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
   cursor: text;
+  transform-origin: top left;
   will-change: width, height, border-radius;
+}
+
+.cmd.is-open {
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.cmd__border {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .cmd__bar {
   display: flex;
   align-items: center;
-  gap: 8px;
   box-sizing: border-box;
   height: 32px;
-  padding: 0 8px 0 12px;
+}
+
+.cmd__slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.cmd.is-open .cmd__slot--key {
+  padding-right: 4px;
 }
 
 .cmd__loupe {
-  width: 14px;
-  height: 14px;
-  color: #9a9a9a;
-  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: #ededed;
 }
 
 .cmd__input {
   flex: 1;
   min-width: 0;
-  height: 100%;
+  height: 20px;
+  padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
   color: #ededed;
   font: inherit;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
   outline: none;
   appearance: none;
   -webkit-appearance: none;
 }
 
 .cmd__input::placeholder {
-  color: #8a8a8a;
+  color: rgba(237, 237, 237, 0.4);
+  font-weight: 400;
+}
+
+.cmd.is-open .cmd__input::placeholder {
+  color: #4f4f4e;
 }
 
 .cmd__key {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 18px;
-  height: 18px;
-  overflow: hidden;
-  border: 1px solid #2a2a2a;
-  border-radius: 5px;
-  color: #b3b3b3;
-  font-size: 10px;
-  line-height: 10px;
-  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #ededed;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0;
 }
 
-.cmd__key-txt {
-  position: absolute;
-  white-space: nowrap;
+.cmd.is-open .cmd__key {
+  width: auto;
+  padding: 2px 4px;
+  letter-spacing: -0.6px;
+}
+
+.cmd__rule {
+  height: 0;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cmd.is-open .cmd__rule {
+  height: 1px;
 }
 
 .cmd__body {
-  padding: 4px 0 10px;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+.cmd__body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cmd__body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
 }
 
 .cmd__line {
   height: 1px;
-  margin: 4px 0;
-  background: #2a2a2a;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .cmd__group {
-  padding: 8px 16px 6px;
-  color: #6d6d6d;
+  padding: 4px;
+}
+
+.cmd__label {
+  margin: 0;
+  padding: 6px 8px;
+  color: #4f4f4e;
   font-size: 12px;
+  font-weight: 500;
   line-height: 16px;
 }
 
 .cmd__row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: calc(100% - 16px);
-  height: 36px;
-  margin: 0 8px;
-  padding: 0 12px;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  padding: 6px 8px;
   border: 0;
+  border-radius: 4px;
   background: transparent;
-  border-radius: 8px;
   color: #ededed;
   font: inherit;
   font-size: 14px;
+  font-weight: 400;
   line-height: 20px;
   text-align: start;
   cursor: pointer;
 }
 
 .cmd__row.is-on {
-  background: #282828;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .cmd__glyph {
-  width: 14px;
-  height: 14px;
-  color: #c8c8c8;
+  width: 16px;
+  height: 16px;
+  color: #4f4f4e;
   flex-shrink: 0;
 }
 
 .cmd__name {
   flex: 1;
+  font-weight: 400;
 }
 
 .cmd__hot {
-  color: #8a8a8a;
+  margin-left: auto;
+  color: #4f4f4e;
   font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0.1em;
 }
 </style>

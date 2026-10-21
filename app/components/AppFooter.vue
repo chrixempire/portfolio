@@ -16,7 +16,7 @@
               <img :src="copied ? '/icons/check.svg' : '/icons/copy.svg'" alt="" width="10" height="10">
             </button>
           </span>
-          <a class="footer__schedule" :href="site.calendly" target="_blank" rel="noopener noreferrer">
+          <a v-if="!isStudy" class="footer__schedule" :href="site.calendly" target="_blank" rel="noopener noreferrer">
             Schedule an intro
           </a>
         </div>
@@ -34,7 +34,7 @@
         </div>
       </div>
     </div>
-    <NameBand />
+    <NameBand v-if="!isStudy" />
     <p class="footer__copywrite">
       Maintain by {{ site.name }} © 2026 - All rights reserved
     </p>
@@ -44,6 +44,8 @@
 <script setup lang="ts">
 import { site } from '~/data/site'
 
+const route = useRoute()
+const isStudy = computed(() => /^\/interaction\/04\/[^/]+/.test(route.path))
 const root = ref<HTMLElement | null>(null)
 const copied = ref(false)
 const { $gsap } = useNuxtApp()

@@ -1,7 +1,7 @@
 <template>
   <header ref="root" class="header">
     <div class="header__inner">
-      <NuxtLink to="/" class="brand" @click="onBrandClick">
+      <NuxtLink v-if="!isStudy" to="/" class="brand" @click="onBrandClick">
         <img
           class="brand__avatar"
           src="/images/portrait.jpeg"
@@ -15,8 +15,21 @@
           <span class="brand__badge">Available for work</span>
         </div>
       </NuxtLink>
+      <div v-else class="brand">
+        <img
+          class="brand__avatar"
+          src="/images/portrait.jpeg"
+          :alt="`${site.name}, ${site.title}`"
+          width="48"
+          height="48"
+        >
+        <div class="brand__meta">
+          <p class="brand__name">{{ site.name }}</p>
+          <p class="brand__title">{{ site.title }} · {{ site.location }}</p>
+        </div>
+      </div>
 
-      <nav class="nav" aria-label="Primary">
+      <nav v-if="!isStudy" class="nav" aria-label="Primary">
         <template v-for="item in site.nav" :key="item.href">
           <NuxtLink
             v-if="isRoute(item.href)"
@@ -53,8 +66,13 @@
         <ThemeToggle />
       </nav>
 
-      <div class="header__mobile-toggle">
+      <div v-if="isStudy" class="header__study-toggle">
+        <ThemeToggle />
+      </div>
+
+      <div v-else class="header__mobile-toggle">
         <NuxtLink
+          v-if="!isStudy"
           class="mobile-link"
           :to="route.path === '/interaction' ? '/' : '/interaction'"
         >
@@ -70,6 +88,7 @@
 import { site } from '~/data/site'
 
 const route = useRoute()
+const isStudy = computed(() => /^\/interaction\/04\/[^/]+/.test(route.path))
 const root = ref<HTMLElement | null>(null)
 const { $lenis, $gsap } = useNuxtApp()
 const { unfolded } = useBoot()
@@ -78,7 +97,7 @@ let played = false
 const copied = ref(false)
 const isRoute = (href: string) => href.startsWith('/')
 const isActive = (href: string) => {
-  if (href === '/interaction') return route.path === '/interaction'
+  if (href === '/interaction') return route.path.startsWith('/interaction')
   if (href === '#top') return route.path === '/'
   return false
 }
@@ -323,6 +342,7 @@ onMounted(() => {
   filter: invert(1);
 }
 
+.header__study-toggle,
 .header__mobile-toggle {
   display: flex;
   align-items: center;

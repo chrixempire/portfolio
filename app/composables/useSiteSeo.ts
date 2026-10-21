@@ -1,8 +1,8 @@
 import { site } from '~/data/site'
 
 type SiteSeoOptions = {
-  title?: string
-  description?: string
+  title?: MaybeRef<string>
+  description?: MaybeRef<string>
   path?: string
 }
 
@@ -92,8 +92,8 @@ export function useSiteSeo(options: SiteSeoOptions = {}) {
               '@type': 'WebPage',
               '@id': `${canonical.value}#webpage`,
               url: canonical.value,
-              name: title,
-              description,
+              name: unref(title),
+              description: unref(description),
               inLanguage: 'en',
               isPartOf: { '@id': `${origin.value}/#website` },
               about: { '@id': `${origin.value}/#person` }

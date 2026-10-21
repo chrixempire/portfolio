@@ -13,7 +13,8 @@
       </div>
       <p class="credit">
         After
-        <a href="https://skiper-ui.com/v1/skiper92" target="_blank" rel="noopener noreferrer">Skiper UI 92</a>
+        <a href="https://skiper-ui.com/v1/skiper92" target="_blank" rel="noopener noreferrer">Skiper UI 92</a>.
+        <NuxtLink to="/interaction/2032/command-search">Details</NuxtLink>
       </p>
     </section>
 
@@ -29,7 +30,8 @@
       </div>
       <p class="credit">
         After
-        <a href="https://skiper-ui.com/v1/skiper3" target="_blank" rel="noopener noreferrer">Skiper UI 3</a>
+        <a href="https://skiper-ui.com/v1/skiper3" target="_blank" rel="noopener noreferrer">Skiper UI 3</a>.
+        <NuxtLink to="/interaction/2032/play-button">Details</NuxtLink>
       </p>
     </section>
 
@@ -47,7 +49,8 @@
         After
         <a href="https://skiper-ui.com/v1/skiper23" target="_blank" rel="noopener noreferrer">Skiper UI 23</a>.
         Inspired by Family and
-        <a href="https://www.jakub.kr" target="_blank" rel="noopener noreferrer">jakub.kr</a>
+        <a href="https://www.jakub.kr" target="_blank" rel="noopener noreferrer">jakub.kr</a>.
+        <NuxtLink to="/interaction/2032/card-expand">Details</NuxtLink>
       </p>
     </section>
 
@@ -65,7 +68,8 @@
         After
         <a href="https://skiper-ui.com/v1/skiper52" target="_blank" rel="noopener noreferrer">Skiper UI 52</a>.
         Illustrations by
-        <a href="https://x.com/AarzooAly" target="_blank" rel="noopener noreferrer">AarzooAly</a>
+        <a href="https://x.com/AarzooAly" target="_blank" rel="noopener noreferrer">AarzooAly</a>.
+        <NuxtLink to="/interaction/2032/hover-expand">Details</NuxtLink>
       </p>
     </section>
 
@@ -87,7 +91,8 @@
         Built with
         <a href="https://swiperjs.com/" target="_blank" rel="noopener noreferrer">Swiper</a>.
         Illustrations by
-        <a href="https://x.com/AarzooAly" target="_blank" rel="noopener noreferrer">AarzooAly</a>
+        <a href="https://x.com/AarzooAly" target="_blank" rel="noopener noreferrer">AarzooAly</a>.
+        <NuxtLink to="/interaction/2032/creative-carousel">Details</NuxtLink>
       </p>
     </section>
 
@@ -110,7 +115,8 @@
       </div>
       <p class="credit">
         After
-        <a href="https://www.rareui.com/components/otpinput" target="_blank" rel="noopener noreferrer">Rare UI</a>
+        <a href="https://www.rareui.com/components/otpinput" target="_blank" rel="noopener noreferrer">Rare UI</a>.
+        <NuxtLink to="/interaction/2032/otp-input">Details</NuxtLink>
       </p>
     </section>
 
@@ -126,7 +132,27 @@
         After
         <a href="https://skiper-ui.com/v1/skiper34" target="_blank" rel="noopener noreferrer">Skiper UI 34</a>.
         Images from
-        <a href="https://www.lummi.ai" target="_blank" rel="noopener noreferrer">lummi.ai</a>
+        <a href="https://www.lummi.ai" target="_blank" rel="noopener noreferrer">lummi.ai</a>.
+        <NuxtLink to="/interaction/2032/scroll-stack">Details</NuxtLink>
+      </p>
+    </section>
+
+    <section class="block">
+      <header class="block__copy">
+        <h2 class="block__title font-display">Bouncy accordion</h2>
+        <p class="block__body">
+          Click a row. It springs open and splits off the stack. Click it again to fold it back.
+        </p>
+      </header>
+      <div class="stage stage--accordion" aria-label="Bouncy accordion">
+        <BouncyAccordion />
+      </div>
+      <p class="credit">
+        After
+        <a href="https://skiper-ui.com/v1/skiper103" target="_blank" rel="noopener noreferrer">Skiper UI 103</a>.
+        Inspired by
+        <a href="https://x.com/dev_ya" target="_blank" rel="noopener noreferrer">Yanis</a>.
+        <NuxtLink to="/interaction/2032/bouncy-accordion">Details</NuxtLink>
       </p>
     </section>
 
@@ -213,7 +239,7 @@ const onOtpComplete = (code: string) => {
 }
 
 .stage--search {
-  min-height: 640px;
+  min-height: 720px;
   align-items: center;
   background: #121212;
 }
@@ -232,6 +258,11 @@ const onOtpComplete = (code: string) => {
 
 .stage--otp {
   min-height: 420px;
+}
+
+.stage--accordion {
+  min-height: 520px;
+  background: #121212;
 }
 
 .otp-demo {
@@ -282,6 +313,10 @@ const onOtpComplete = (code: string) => {
   .stage {
     min-height: 360px;
     border-radius: 24px;
+  }
+
+  .stage--search {
+    min-height: 700px;
   }
 }
 </style>
