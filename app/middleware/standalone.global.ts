@@ -15,6 +15,11 @@ export default defineNuxtRouteMiddleware((to) => {
     return navigateTo(`/interaction/04/${legacy[1]}`, { redirectCode: 302, replace: true })
   }
 
+  const short = to.path.match(/^\/04\/([^/]+)$/)
+  if (short && interactionBySlug(short[1])) {
+    return navigateTo(`/interaction/04/${short[1]}`, { redirectCode: 302, replace: true })
+  }
+
   if (import.meta.server) return
 
   if (standalonePath.test(to.path)) {
