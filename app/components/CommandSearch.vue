@@ -41,7 +41,7 @@
               class="cmd__row"
               :class="{ 'is-on': item.id === activeId }"
               type="button"
-              @mouseenter="activeId = item.id"
+              @mouseenter="hoverItem(item.id)"
               @click.stop="choose(item)"
             >
               <svg v-if="item.icon === 'arrow'" class="cmd__glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -212,6 +212,11 @@ const choose = (item: Command) => {
   toast.add({ type: 'success', title: `Selected ${item.label}`, timeout: 3200 })
 }
 
+const hoverItem = (id: string) => {
+  activeId.value = id
+  revealActive()
+}
+
 const revealActive = () => {
   nextTick(() => {
     const scroller = panel.value
@@ -219,8 +224,9 @@ const revealActive = () => {
     if (!scroller || !(row instanceof HTMLElement)) return
     const scrollerRect = scroller.getBoundingClientRect()
     const rowRect = row.getBoundingClientRect()
-    if (rowRect.top < scrollerRect.top) scroller.scrollTop -= scrollerRect.top - rowRect.top
-    else if (rowRect.bottom > scrollerRect.bottom) scroller.scrollTop += rowRect.bottom - scrollerRect.bottom
+    const gutter = 4
+    if (rowRect.top < scrollerRect.top + gutter) scroller.scrollTop -= scrollerRect.top + gutter - rowRect.top
+    else if (rowRect.bottom > scrollerRect.bottom - gutter) scroller.scrollTop += rowRect.bottom - (scrollerRect.bottom - gutter)
   })
 }
 
@@ -252,6 +258,14 @@ const onKey = (event: KeyboardEvent) => {
     return
   }
   if (!open.value) return
+  if ((event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey && event.key.length === 1) {
+    const item = filtered.value.find(entry => entry.shortcut === `⌘${event.key.toUpperCase()}`)
+    if (item) {
+      event.preventDefault()
+      choose(item)
+      return
+    }
+  }
   if (event.key === 'ArrowDown') { event.preventDefault(); move(1) }
   if (event.key === 'ArrowUp') { event.preventDefault(); move(-1) }
   if (event.key === 'Enter') {
@@ -419,6 +433,7 @@ onBeforeUnmount(() => {
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scroll-padding: 4px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
 }
