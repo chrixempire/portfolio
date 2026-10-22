@@ -1,12 +1,12 @@
 <template>
-  <div class="shell">
-    <div class="page-sky" />
-    <div ref="flashRef" class="theme-flash" aria-hidden="true" />
-    <CustomCursor />
+  <div class="shell" :class="{ 'shell--draft': !isLegacy }">
+    <div v-if="isLegacy" class="page-sky" />
+    <div v-if="isLegacy" ref="flashRef" class="theme-flash" aria-hidden="true" />
+    <CustomCursor v-if="isLegacy" />
     <Preloader v-if="!skipLoader" v-model="booting" />
     <Unfold v-if="!skipLoader" />
     <div class="site">
-      <AppHeader />
+      <AppHeader v-if="isLegacy" />
       <NuxtPage />
     </div>
     <Toaster />
@@ -15,13 +15,15 @@
 
 <script setup lang="ts">
 const route = useRoute()
+const isLegacy = computed(() => route.path === '/interaction' || route.path.startsWith('/interaction/'))
 const { booting, finishBoot, finishUnfold } = useBoot()
 const { initTheme, applyTheme } = useTheme()
 const { $gsap, $lenis, $ScrollTrigger } = useNuxtApp()
 const flashRef = ref<HTMLElement | null>(null)
-const skipLoader = computed(() => route.query.skipLoader === '1')
+const skipLoader = computed(() => route.query.skipLoader === '1' || !isLegacy.value)
 
 const onTheme = (event: Event) => {
+  if (!isLegacy.value) return
   const gsap = $gsap
   if (!gsap || !flashRef.value) return
   const detail = (event as CustomEvent<{ x: number, y: number }>).detail
@@ -72,5 +74,20 @@ onBeforeUnmount(() => {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
+}
+
+.shell--draft {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: none;
+}
+
+.shell--draft .site {
+  overflow: visible;
+}
+
+[data-theme='dark'] .shell--draft {
+  background: #000000;
+  color: #ffffff;
 }
 </style>

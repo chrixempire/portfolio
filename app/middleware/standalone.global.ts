@@ -4,6 +4,19 @@ const LOCK = 'interaction-standalone'
 const standalonePath = /^\/interaction\/04\/[^/]+$/
 
 export default defineNuxtRouteMiddleware((to) => {
+  if (to.path === '/next' || to.path === '/next/') {
+    return navigateTo('/', { redirectCode: 301, replace: true })
+  }
+
+  if (to.path === '/next/studies' || to.path === '/next/studies/') {
+    return navigateTo('/studies', { redirectCode: 301, replace: true })
+  }
+
+  const movedStudy = to.path.match(/^\/next\/studies\/([^/]+)\/?$/)
+  if (movedStudy) {
+    return navigateTo(`/studies/${movedStudy[1]}`, { redirectCode: 301, replace: true })
+  }
+
   const previous = to.path.match(/^\/interaction\/(0|1)\/([^/]+)$/)
   if (previous && interactionBySlug(previous[2])) {
     const mode = previous[1] === '0' ? '2032' : '04'

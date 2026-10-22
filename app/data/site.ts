@@ -23,32 +23,22 @@ export const site = {
   ]
 }
 
-export const stackImages = [
-  '/images/lummi/img14.png',
-  '/images/lummi/img30.png',
-  '/images/lummi/img19.png',
-  '/images/lummi/img21.png',
-  '/images/lummi/img23.png',
-  '/images/lummi/imgp2.png',
-  '/images/lummi/img27.png'
-]
-
 export const hoverImages = [
-  { src: '/images/x.com/13.jpeg', alt: 'Illustration by AarzooAly', code: '# 01' },
-  { src: '/images/x.com/32.jpeg', alt: 'Illustration by AarzooAly', code: '# 02' },
-  { src: '/images/x.com/20.jpeg', alt: 'Illustration by AarzooAly', code: '# 03' },
-  { src: '/images/x.com/21.jpeg', alt: 'Illustration by AarzooAly', code: '# 04' },
-  { src: '/images/x.com/19.jpeg', alt: 'Illustration by AarzooAly', code: '# 05' },
-  { src: '/images/x.com/1.jpeg', alt: 'Illustration by AarzooAly', code: '# 06' },
-  { src: '/images/x.com/2.jpeg', alt: 'Illustration by AarzooAly', code: '# 07' },
-  { src: '/images/x.com/3.jpeg', alt: 'Illustration by AarzooAly', code: '# 08' },
-  { src: '/images/x.com/4.jpeg', alt: 'Illustration by AarzooAly', code: '# 09' }
+  { src: '/images/studies/ridge.jpg', alt: 'Ridge at dusk', code: 'Ridge' },
+  { src: '/images/studies/field.jpg', alt: 'Open field', code: 'Field' },
+  { src: '/images/studies/forest.jpg', alt: 'Forest path', code: 'Forest' },
+  { src: '/images/studies/fog.jpg', alt: 'Fog over hills', code: 'Fog' },
+  { src: '/images/studies/shore.jpg', alt: 'Shoreline', code: 'Shore' },
+  { src: '/images/studies/night.jpg', alt: 'Night sky', code: 'Night' },
+  { src: '/images/studies/peak.jpg', alt: 'Mountain peak', code: 'Peak' }
 ]
 
-export const carouselImages = [
-  ...hoverImages.map(({ src, alt }) => ({ src, alt })),
-  { src: '/images/x.com/5.jpeg', alt: 'Illustration by AarzooAly' },
-  { src: '/images/x.com/6.jpeg', alt: 'Illustration by AarzooAly' }
+export const carouselImages = hoverImages.map(({ src, alt }) => ({ src, alt }))
+
+export const stackImages = [
+  ...hoverImages,
+  { src: '/images/studies/valley.jpg', alt: 'Green valley' },
+  { src: '/images/studies/falls.jpg', alt: 'Waterfall' }
 ]
 
 export const techStack = [
@@ -83,7 +73,7 @@ export const experience = [
   },
   {
     dates: 'July 2026  –  Present',
-    role: 'Frontend Engineer, Bayana NGO',
+    role: 'Frontend Engineer (Contract), Bayana NGO',
     logo: '/icons/companies/bayana.svg',
     logoInset: true,
     logoWide: false,
@@ -132,8 +122,8 @@ export const products = [
     title: 'Daash',
     description: 'SaaS ecosystem for daily business operations, including architectural direction and an internal payments integration across multiple methods.',
     tools: 'VUE + NUXT + TYPESCRIPT',
-    href: '#',
-    external: false,
+    href: 'https://app.daashapp.co/',
+    external: true,
     color: 'var(--card-d)',
     video: '/videos/daash.mp4',
     poster: '/videos/daash.jpg'

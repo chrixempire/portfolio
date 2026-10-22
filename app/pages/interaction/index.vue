@@ -67,8 +67,7 @@
       <p class="credit">
         After
         <a href="https://skiper-ui.com/v1/skiper52" target="_blank" rel="noopener noreferrer">Skiper UI 52</a>.
-        Illustrations by
-        <a href="https://x.com/AarzooAly" target="_blank" rel="noopener noreferrer">AarzooAly</a>.
+        Landscape photographs.
         <NuxtLink to="/interaction/2032/hover-expand">Details</NuxtLink>
       </p>
     </section>
@@ -90,8 +89,7 @@
         <a href="https://skiper-ui.com/v1/skiper50" target="_blank" rel="noopener noreferrer">Skiper UI 50</a>.
         Built with
         <a href="https://swiperjs.com/" target="_blank" rel="noopener noreferrer">Swiper</a>.
-        Illustrations by
-        <a href="https://x.com/AarzooAly" target="_blank" rel="noopener noreferrer">AarzooAly</a>.
+        Landscape photographs.
         <NuxtLink to="/interaction/2032/creative-carousel">Details</NuxtLink>
       </p>
     </section>
@@ -124,13 +122,14 @@
       <header class="block__copy">
         <h2 class="block__title font-display">Scroll the stack</h2>
         <p class="block__body">
-          Cards pin as you scroll, then shrink and rotate to reveal the next one. The last card lands straight.
+          Cards pin as you scroll. The one underneath shrinks and turns while the next card slides up over it.
         </p>
       </header>
       <StickyCards />
       <p class="credit">
         After
         <a href="https://skiper-ui.com/v1/skiper34" target="_blank" rel="noopener noreferrer">Skiper UI 34</a>.
+        Landscape photographs.
         Images from
         <a href="https://www.lummi.ai" target="_blank" rel="noopener noreferrer">lummi.ai</a>.
         <NuxtLink to="/interaction/2032/scroll-stack">Details</NuxtLink>

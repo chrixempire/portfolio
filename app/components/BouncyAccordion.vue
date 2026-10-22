@@ -1,10 +1,12 @@
 <template>
-  <ul ref="list" class="bounce">
-    <li
-      v-for="item in items"
+  <ul class="bounce">
+    <motion.li
+      v-for="(item, index) in items"
       :key="item.id"
       class="bounce__item"
       :class="{ 'is-open': item.id === openId }"
+      :animate="pose(item.id, index)"
+      :transition="spring"
     >
       <button
         class="bounce__head"
@@ -46,12 +48,14 @@
           <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </button>
-      <p class="bounce__copy">{{ item.copy }}</p>
-    </li>
+      <p :ref="(el) => setCopy(index, el)" class="bounce__copy">{{ item.copy }}</p>
+    </motion.li>
   </ul>
 </template>
 
 <script setup lang="ts">
+import { motion } from 'motion-v'
+
 type Icon = 'book' | 'award' | 'calendar' | 'cart' | 'alert' | 'wallet'
 
 type Row = {
@@ -62,21 +66,23 @@ type Row = {
 }
 
 const items: Row[] = [
-  { id: 'type', label: 'Type Shit', copy: 'Fast, accurate typing with real-time validation and helpful hints.', icon: 'book' },
-  { id: 'star', label: 'Star Great', copy: 'Mark favorites and rate items with smooth micro-interactions.', icon: 'award' },
-  { id: 'schedule', label: 'Schedule', copy: 'Plan tasks with timelines, reminders, and conflict detection.', icon: 'calendar' },
-  { id: 'buy', label: 'Buy Stuff', copy: 'Streamlined checkout with secure payments and transparent pricing.', icon: 'cart' },
-  { id: 'alert', label: 'Triangle Warning', copy: 'Surface critical alerts with accessible, non-intrusive messaging.', icon: 'alert' },
-  { id: 'account', label: 'Account bal', copy: 'Track balances, recent activity, and spending insights at a glance.', icon: 'wallet' }
+  { id: 'type', label: 'Orders', copy: 'A buyer places one order and the kitchen, rider, and admin all see the same status.', icon: 'book' },
+  { id: 'star', label: 'Escrow', copy: 'A trade stays locked until both sides confirm the currency has moved.', icon: 'award' },
+  { id: 'schedule', label: 'Events', copy: 'An NGO posts a drive, and volunteers claim a slot without a second app.', icon: 'calendar' },
+  { id: 'buy', label: 'Letters', copy: 'Someone writes a note, dresses it, and sends it from the web or a phone.', icon: 'cart' },
+  { id: 'alert', label: 'Alerts', copy: 'A team sees new feedback as it arrives, instead of checking a mailbox.', icon: 'alert' },
+  { id: 'account', label: 'Balances', copy: 'A business watches what came in today without opening three tools.', icon: 'wallet' }
 ]
 
 const CLOSED_H = 45
 
-const list = ref<HTMLElement | null>(null)
 const openId = ref('')
-const { $gsap } = useNuxtApp()
+const copies = ref<(HTMLElement | null)[]>([])
+const spring = { type: 'spring' as const, bounce: 0.35, duration: 0.7 }
 
-const rows = () => [...(list.value?.children ?? [])] as HTMLElement[]
+const setCopy = (index: number, el: Element | { $el?: Element } | null) => {
+  copies.value[index] = el instanceof HTMLElement ? el : null
+}
 
 const radiusFor = (index: number, open: boolean) => {
   if (open) return '20px'
@@ -88,41 +94,20 @@ const radiusFor = (index: number, open: boolean) => {
   return '20px'
 }
 
-const layout = () => {
-  const gsap = $gsap
-  if (!gsap) return
-  const reduced = prefersReducedMotion()
-  rows().forEach((el, index) => {
-    const open = items[index].id === openId.value
-    const copy = el.querySelector('.bounce__copy') as HTMLElement | null
-    gsap.to(el, {
-      height: open ? CLOSED_H + (copy?.offsetHeight ?? 0) : CLOSED_H,
-      marginTop: open ? 10 : 0,
-      marginBottom: open ? 10 : 0,
-      borderRadius: radiusFor(index, open),
-      duration: reduced ? 0 : 0.7,
-      ease: reduced ? 'none' : 'elastic.out(1, 0.7)',
-      overwrite: 'auto'
-    })
-  })
+const pose = (id: string, index: number) => {
+  const open = id === openId.value
+  const copy = copies.value[index]
+  return {
+    height: open ? CLOSED_H + (copy?.offsetHeight ?? 36) : CLOSED_H,
+    marginTop: open ? 10 : 0,
+    marginBottom: open ? 10 : 0,
+    borderRadius: radiusFor(index, open)
+  }
 }
 
 const toggle = (id: string) => {
   openId.value = openId.value === id ? '' : id
-  layout()
 }
-
-onMounted(() => {
-  const gsap = $gsap
-  rows().forEach((el, index) => {
-    gsap?.set(el, {
-      height: CLOSED_H,
-      marginTop: 0,
-      marginBottom: 0,
-      borderRadius: radiusFor(index, false)
-    })
-  })
-})
 </script>
 
 <style scoped>

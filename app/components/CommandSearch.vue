@@ -30,7 +30,7 @@
       <div class="cmd__rule" />
 
       <div class="cmd__border" />
-      <div ref="panel" class="cmd__body" data-lenis-prevent>
+      <div ref="panel" class="cmd__body" data-lenis-prevent :inert="!open">
         <template v-for="(group, index) in visibleGroups" :key="group.label">
           <div v-if="index > 0" class="cmd__line" />
           <div class="cmd__group">
@@ -100,22 +100,22 @@ type Command = {
 }
 
 const commands: Command[] = [
-  { id: 'calendar', label: 'Calendar', group: 'Suggestions', icon: 'arrow' },
-  { id: 'emoji', label: 'Search Emoji', group: 'Suggestions', icon: 'arrow' },
-  { id: 'calculator', label: 'Calculator', group: 'Suggestions', icon: 'arrow' },
-  { id: 'documents', label: 'Documents', group: 'Suggestions', icon: 'arrow' },
-  { id: 'images', label: 'Images', group: 'Suggestions', icon: 'arrow' },
-  { id: 'music', label: 'Music', group: 'Suggestions', icon: 'arrow' },
-  { id: 'profile', label: 'Profile', group: 'Settings', icon: 'cog', shortcut: '⌘P' },
-  { id: 'billing', label: 'Billing', group: 'Settings', icon: 'cog', shortcut: '⌘B' },
-  { id: 'settings', label: 'Settings', group: 'Settings', icon: 'cog', shortcut: '⌘S' },
-  { id: 'notifications', label: 'Notifications', group: 'Settings', icon: 'cog', shortcut: '⌘N' },
-  { id: 'messages', label: 'Messages', group: 'Settings', icon: 'cog', shortcut: '⌘M' },
-  { id: 'security', label: 'Security', group: 'Settings', icon: 'cog', shortcut: '⌘T' },
-  { id: 'faq', label: 'FAQ', group: 'Help', icon: 'dashed' },
-  { id: 'support', label: 'Contact Support', group: 'Help', icon: 'dashed' },
-  { id: 'docs', label: 'Documentation', group: 'Docs', icon: 'book' },
-  { id: 'tutorials', label: 'Tutorials', group: 'Docs', icon: 'book' }
+  { id: 'calendar', label: 'GoSource', group: 'Suggestions', icon: 'arrow' },
+  { id: 'emoji', label: 'Kaorex', group: 'Suggestions', icon: 'arrow' },
+  { id: 'calculator', label: 'Daash', group: 'Suggestions', icon: 'arrow' },
+  { id: 'documents', label: 'Octupus', group: 'Suggestions', icon: 'arrow' },
+  { id: 'images', label: 'Quality', group: 'Suggestions', icon: 'arrow' },
+  { id: 'music', label: 'Bayana', group: 'Suggestions', icon: 'arrow' },
+  { id: 'profile', label: 'Resume', group: 'Settings', icon: 'cog', shortcut: '⌘P' },
+  { id: 'billing', label: 'Schedule', group: 'Settings', icon: 'cog', shortcut: '⌘B' },
+  { id: 'settings', label: 'LinkedIn', group: 'Settings', icon: 'cog', shortcut: '⌘S' },
+  { id: 'notifications', label: 'GitHub', group: 'Settings', icon: 'cog', shortcut: '⌘N' },
+  { id: 'messages', label: 'Email', group: 'Settings', icon: 'cog', shortcut: '⌘M' },
+  { id: 'security', label: 'Phone', group: 'Settings', icon: 'cog', shortcut: '⌘T' },
+  { id: 'faq', label: 'Questions', group: 'Help', icon: 'dashed' },
+  { id: 'support', label: 'Write to me', group: 'Help', icon: 'dashed' },
+  { id: 'docs', label: 'Case notes', group: 'Docs', icon: 'book' },
+  { id: 'tutorials', label: 'Build notes', group: 'Docs', icon: 'book' }
 ]
 
 const CLOSED_W = 192
@@ -134,8 +134,6 @@ const input = ref<HTMLInputElement | null>(null)
 const open = ref(false)
 const query = ref('')
 const activeId = ref(commands[0].id)
-const { $gsap } = useNuxtApp()
-let tween: { kill: () => void } | null = null
 
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase()
@@ -154,46 +152,22 @@ const ids = computed(() => filtered.value.map(item => item.id))
 
 watch(filtered, (items) => {
   if (!items.some(item => item.id === activeId.value)) activeId.value = items[0]?.id ?? ''
-  if (!open.value || !box.value || !$gsap) return
-  nextTick(() => {
-    $gsap.set(box.value, { height: openHeight() })
-  })
+  if (!open.value) return
+  nextTick(syncHeight)
 })
 
 const openHeight = () => BAR_H + RULE + Math.min(panel.value?.scrollHeight ?? 0, LIST_MAX)
 
-const morph = (next: boolean) => {
-  const gsap = $gsap
-  if (!gsap || !box.value) return
-  tween?.kill()
-
-  if (!next) gsap.set(box.value, { height: box.value.offsetHeight })
-
-  const reduced = prefersReducedMotion()
-  const duration = reduced ? 0 : next ? 0.42 : 0.32
-  const ease = reduced ? 'none' : next ? 'back.out(0.55)' : 'power3.inOut'
-  const tl = gsap.timeline({ overwrite: 'auto' })
-  tween = tl
-
-  tl.to(box.value, {
-    width: next ? OPEN_W : CLOSED_W,
-    height: next ? openHeight() : CLOSED_H,
-    borderRadius: next ? 12 : 6,
-    duration,
-    ease
-  }, 0)
-
-  const slot = next ? 48 : 32
-  if (bar.value) tl.to(bar.value, { height: next ? BAR_H : CLOSED_H, duration, ease }, 0)
-  if (iconSlot.value) tl.to(iconSlot.value, { width: slot, height: slot, duration, ease }, 0)
-  if (keySlot.value) tl.to(keySlot.value, { width: slot, height: slot, duration, ease }, 0)
+const syncHeight = () => {
+  if (!box.value || !open.value) return
+  box.value.style.setProperty('--open-h', `${openHeight()}px`)
 }
 
 const openSearch = () => {
   if (open.value) return
   open.value = true
   nextTick(() => {
-    morph(true)
+    syncHeight()
     input.value?.focus()
   })
 }
@@ -203,7 +177,11 @@ const closeSearch = () => {
   query.value = ''
   activeId.value = commands[0].id
   open.value = false
-  morph(false)
+  if (panel.value?.contains(document.activeElement)) {
+    (document.activeElement as HTMLElement).blur()
+  }
+  if (box.value) box.value.scrollTop = 0
+  if (panel.value) panel.value.scrollTop = 0
   input.value?.blur()
 }
 
@@ -280,22 +258,12 @@ const onPointer = (event: PointerEvent) => {
 }
 
 onMounted(() => {
-  const gsap = $gsap
-  gsap?.set(box.value, {
-    x: -CLOSED_W / 2,
-    width: CLOSED_W,
-    height: CLOSED_H,
-    borderRadius: 6
-  })
-  gsap?.set(bar.value, { height: CLOSED_H })
-  gsap?.set([iconSlot.value, keySlot.value], { width: 32, height: 32 })
   window.addEventListener('keydown', onKey)
   document.addEventListener('pointerdown', onPointer)
   panel.value?.addEventListener('wheel', onWheel, { passive: false })
 })
 
 onBeforeUnmount(() => {
-  tween?.kill()
   window.removeEventListener('keydown', onKey)
   document.removeEventListener('pointerdown', onPointer)
   panel.value?.removeEventListener('wheel', onWheel)
@@ -313,12 +281,19 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 0;
   left: 50%;
+  margin-left: -96px;
   box-sizing: border-box;
   width: 192px;
   height: 32px;
-  overflow: hidden;
+  overflow: clip;
   background: #121212;
   border-radius: 6px;
+  transition:
+    width 0.45s cubic-bezier(0.34, 1.15, 0.64, 1),
+    height 0.45s cubic-bezier(0.34, 1.15, 0.64, 1),
+    margin-left 0.45s cubic-bezier(0.34, 1.15, 0.64, 1),
+    left 0.45s cubic-bezier(0.34, 1.15, 0.64, 1),
+    border-radius 0.45s ease;
   color: #ededed;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   font-size: 14px;
@@ -330,6 +305,9 @@ onBeforeUnmount(() => {
 }
 
 .cmd.is-open {
+  width: 384px;
+  height: var(--open-h, 360px);
+  border-radius: 12px;
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 0.1),
     0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -349,6 +327,11 @@ onBeforeUnmount(() => {
   align-items: center;
   box-sizing: border-box;
   height: 32px;
+  transition: height 0.45s cubic-bezier(0.34, 1.15, 0.64, 1);
+}
+
+.cmd.is-open .cmd__bar {
+  height: 48px;
 }
 
 .cmd__slot {
@@ -358,6 +341,14 @@ onBeforeUnmount(() => {
   width: 32px;
   height: 32px;
   flex-shrink: 0;
+  transition:
+    width 0.45s cubic-bezier(0.34, 1.15, 0.64, 1),
+    height 0.45s cubic-bezier(0.34, 1.15, 0.64, 1);
+}
+
+.cmd.is-open .cmd__slot {
+  width: 48px;
+  height: 48px;
 }
 
 .cmd.is-open .cmd__slot--key {
@@ -509,5 +500,18 @@ onBeforeUnmount(() => {
   font-weight: 400;
   line-height: 16px;
   letter-spacing: 0.1em;
+}
+
+@media (max-width: 680px) {
+  .cmd-root {
+    width: min(384px, 100%);
+    min-width: 0;
+  }
+
+  .cmd.is-open {
+    left: 0;
+    width: 100%;
+    margin-left: 0;
+  }
 }
 </style>

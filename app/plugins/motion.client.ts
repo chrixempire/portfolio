@@ -12,7 +12,8 @@ export default defineNuxtPlugin(() => {
 
   const lenis = new Lenis({
     autoRaf: false,
-    lerp: 0.065,
+    lerp: 0.22,
+    wheelMultiplier: 1.15,
     smoothWheel: true
   })
 

@@ -1,9 +1,11 @@
 <template>
   <div class="player">
-    <button
-      ref="pill"
+    <motion.button
       class="player__pill"
       type="button"
+      :animate="{ width: open ? 330 : 60 }"
+      :initial="{ width: 60 }"
+      :transition="{ type: 'spring', bounce: 0.18, duration: 0.55 }"
       :aria-expanded="open"
       aria-label="Toggle play button"
       @click="toggle"
@@ -32,7 +34,7 @@
           </svg>
         </div>
       </Transition>
-    </button>
+    </motion.button>
 
     <button class="player__toggle" type="button" @click="toggle">
       Toggle
@@ -41,64 +43,13 @@
 </template>
 
 <script setup lang="ts">
-const COLLAPSED = 60
-const EXPANDED = 330
+import { motion } from 'motion-v'
 
-const pill = ref<HTMLElement | null>(null)
 const open = ref(false)
-const { $gsap } = useNuxtApp()
-const { unfolded } = useBoot()
-let entered = false
-
-const spring = () => (prefersReducedMotion() ? 'none' : 'back.out(1.18)')
-
-const resize = () => {
-  const gsap = $gsap
-  if (!gsap || !pill.value) return
-  gsap.to(pill.value, {
-    width: open.value ? EXPANDED : COLLAPSED,
-    duration: prefersReducedMotion() ? 0 : 0.72,
-    ease: spring(),
-    overwrite: 'auto'
-  })
-}
 
 const toggle = () => {
   open.value = !open.value
-  resize()
 }
-
-const playIntro = () => {
-  const gsap = $gsap
-  if (entered || !gsap || !pill.value) return
-  entered = true
-
-  if (prefersReducedMotion()) {
-    gsap.set(pill.value, { scale: 1, y: 0, width: COLLAPSED })
-    return
-  }
-
-  gsap.fromTo(pill.value, {
-    scale: 0,
-    y: '100%',
-    width: COLLAPSED
-  }, {
-    scale: 1,
-    y: 0,
-    duration: 0.8,
-    ease: spring()
-  })
-}
-
-onMounted(() => {
-  const gsap = $gsap
-  if (gsap && pill.value && !prefersReducedMotion()) {
-    gsap.set(pill.value, { scale: 0, y: '100%', width: COLLAPSED })
-  }
-  watch(unfolded, (value) => {
-    if (value) nextTick(playIntro)
-  }, { immediate: true })
-})
 </script>
 
 <style scoped>
@@ -113,14 +64,12 @@ onMounted(() => {
 .player__pill {
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 60px;
+  justify-content: space-between;
   max-width: calc(100vw - 80px);
   height: 60px;
   overflow: hidden;
   border-radius: 999px;
   background: transparent;
-  will-change: transform, width;
 }
 
 .player__track,
@@ -130,7 +79,7 @@ onMounted(() => {
   justify-content: center;
   height: 100%;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: color-mix(in srgb, var(--ink) 16%, transparent);
   flex-shrink: 0;
 }
 
@@ -153,27 +102,27 @@ onMounted(() => {
   width: 60px;
   height: 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
 }
 
 .player__dot {
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
 }
 
 .player__play {
   width: 20px;
   height: 20px;
-  fill: rgba(255, 255, 255, 0.7);
+  fill: color-mix(in srgb, var(--ink) 72%, transparent);
 }
 
 .player__toggle {
   padding: 4px 28px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  color: var(--ink);
   font-size: 14px;
   line-height: 22px;
   font-weight: 500;
@@ -184,7 +133,7 @@ onMounted(() => {
 }
 
 .player-dots-enter-active {
-  transition: opacity 0.35s ease 0.25s;
+  transition: opacity 0.35s ease 0.2s;
 }
 
 .player-dots-enter-from,
@@ -198,19 +147,28 @@ onMounted(() => {
 
 .player-icon-enter-active {
   transition:
-    opacity 0.35s ease 0.25s,
-    transform 0.35s ease 0.25s,
-    filter 0.35s ease 0.25s;
+    opacity 0.4s ease 0.12s,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+    filter 0.4s ease 0.12s;
 }
 
 .player-icon-enter-from,
 .player-icon-leave-to {
   opacity: 0;
-  transform: scale(0.5);
-  filter: blur(4px);
+  transform: scale(0.6);
+  filter: blur(6px);
 }
 
 .player-icon-leave-active {
   transition: opacity 0.12s ease, transform 0.12s ease, filter 0.12s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-icon-enter-active,
+  .player-icon-leave-active,
+  .player-dots-enter-active,
+  .player-dots-leave-active {
+    transition: none;
+  }
 }
 </style>

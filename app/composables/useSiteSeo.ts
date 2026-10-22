@@ -3,7 +3,7 @@ import { site } from '~/data/site'
 type SiteSeoOptions = {
   title?: MaybeRef<string>
   description?: MaybeRef<string>
-  path?: string
+  path?: MaybeRef<string>
 }
 
 export function useSiteSeo(options: SiteSeoOptions = {}) {
@@ -11,7 +11,7 @@ export function useSiteSeo(options: SiteSeoOptions = {}) {
   const route = useRoute()
 
   const origin = computed(() => requestURL.origin.replace(/\/$/, ''))
-  const path = computed(() => options.path ?? route.path)
+  const path = computed(() => unref(options.path) ?? route.path)
   const canonical = computed(() => {
     const suffix = path.value === '/' ? '/' : path.value
     return `${origin.value}${suffix}`
