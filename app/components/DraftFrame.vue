@@ -224,6 +224,12 @@ const route = useRoute()
   stroke-width: 1.4;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ledger .row:hover .point,
+.ledger .row:focus-visible .point {
+  transform: translate(3px, -3px);
 }
 
 .ledger .job .title,
@@ -308,5 +314,16 @@ const route = useRoute()
     gap: 4px;
   }
 
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger .point {
+    transition: none;
+  }
+
+  .ledger .row:hover .point,
+  .ledger .row:focus-visible .point {
+    transform: none;
+  }
 }
 </style>

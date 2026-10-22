@@ -122,8 +122,8 @@ export const products = [
     title: 'Daash',
     description: 'SaaS ecosystem for daily business operations, including architectural direction and an internal payments integration across multiple methods.',
     tools: 'VUE + NUXT + TYPESCRIPT',
-    href: '#',
-    external: false,
+    href: 'https://app.daashapp.co/',
+    external: true,
     color: 'var(--card-d)',
     video: '/videos/daash.mp4',
     poster: '/videos/daash.jpg'
