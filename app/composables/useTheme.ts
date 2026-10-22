@@ -1,33 +1,47 @@
 export type ThemeName = 'light' | 'dark'
+export type ThemeWipe = 'circle' | 'rise'
+
+const MANUAL = 'theme-manual'
+let systemBound = false
+
+const systemTheme = (): ThemeName => (
+  window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+)
 
 export function useTheme() {
   const theme = useState<ThemeName>('theme', () => 'light')
   const transitioning = useState('theme-transitioning', () => false)
 
-  const applyTheme = (next: ThemeName) => {
+  const applyTheme = (next: ThemeName, persist = false) => {
     theme.value = next
     if (!import.meta.client) return
     document.documentElement.dataset.theme = next
-    localStorage.setItem('theme', next)
+    if (persist) localStorage.setItem(MANUAL, next)
     const meta = document.querySelector('meta[name="theme-color"]')
     if (meta) meta.setAttribute('content', next === 'dark' ? '#000000' : '#ffffff')
   }
 
   const initTheme = () => {
     if (!import.meta.client) return
-    const stored = localStorage.getItem('theme') as ThemeName | null
-    const next = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    const manual = localStorage.getItem(MANUAL)
+    const next: ThemeName = manual === 'light' || manual === 'dark' ? manual : systemTheme()
     applyTheme(next)
+    if (systemBound) return
+    systemBound = true
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+      if (localStorage.getItem(MANUAL)) return
+      applyTheme(event.matches ? 'dark' : 'light')
+    })
   }
 
-  const toggleTheme = async (event?: MouseEvent) => {
+  const toggleTheme = async (event?: MouseEvent, wipe: ThemeWipe = 'circle') => {
     if (!import.meta.client || transitioning.value) return
     const next: ThemeName = theme.value === 'light' ? 'dark' : 'light'
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const x = event?.clientX ?? window.innerWidth - 48
     const y = event?.clientY ?? 48
 
-    const commit = () => applyTheme(next)
+    const commit = () => applyTheme(next, true)
 
     if (reduced || typeof document.startViewTransition !== 'function') {
       commit()
@@ -44,15 +58,13 @@ export function useTheme() {
         Math.max(x, window.innerWidth - x),
         Math.max(y, window.innerHeight - y)
       )
+      const clipPath = wipe === 'rise'
+        ? ['inset(100% 0 0 0)', 'inset(0)']
+        : [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`]
       document.documentElement.animate(
+        { clipPath },
         {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`
-          ]
-        },
-        {
-          duration: 900,
+          duration: wipe === 'rise' ? 700 : 900,
           easing: 'cubic-bezier(0.76, 0, 0.24, 1)',
           pseudoElement: '::view-transition-new(root)'
         }

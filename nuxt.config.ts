@@ -17,9 +17,9 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-title', content: 'Christian Anyikamadu' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
-        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/favicon-192.png' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png?v=4' },
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/favicon-192.png?v=4' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png?v=4' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
@@ -29,11 +29,16 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          innerHTML: `try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='light'}`
+          innerHTML: `try{var t=localStorage.getItem('theme-manual');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='light'}`
         }
       ]
     },
     pageTransition: false,
     layoutTransition: false
+  },
+  routeRules: {
+    '/next': { redirect: { to: '/', statusCode: 301 } },
+    '/next/studies': { redirect: { to: '/studies', statusCode: 301 } },
+    '/next/studies/**': { redirect: { to: '/studies/**', statusCode: 301 } }
   }
 })

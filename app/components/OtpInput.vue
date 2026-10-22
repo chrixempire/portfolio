@@ -124,7 +124,6 @@ const emit = defineEmits<{
   complete: [value: string]
 }>()
 
-const { $gsap } = useNuxtApp()
 
 const slots = ref<string[]>(Array.from({ length: props.length }, () => ''))
 const cleared = ref(false)
@@ -287,30 +286,15 @@ const onCharBeforeLeave = (el: Element) => {
 
 watch([caretVisible, caretX], async () => {
   await nextTick()
-  const caret = caretEl.value
-  const gsap = $gsap
-  if (!caret || !gsap) return
-  gsap.set(caret, { yPercent: -50 })
-  if (!caretReady || prefersReducedMotion()) {
-    gsap.set(caret, { x: caretX.value - 1 })
-    caretReady = true
-    return
-  }
-  gsap.to(caret, {
-    x: caretX.value - 1,
-    duration: 0.38,
-    ease: 'power3.out',
-    overwrite: 'auto'
-  })
+  row.value?.style.setProperty('--caret-x', `${caretX.value}px`)
 })
 
 watch(() => props.status, (status) => {
-  if (status !== 'error' || !row.value || !$gsap || prefersReducedMotion()) return
-  $gsap.fromTo(row.value, { x: 0 }, {
-    keyframes: [{ x: -5 }, { x: 4 }, { x: -2 }, { x: 0 }],
-    duration: 0.32,
-    ease: 'power2.out'
-  })
+  const rowEl = row.value
+  if (status !== 'error' || !rowEl || prefersReducedMotion()) return
+  rowEl.classList.remove('is-shaking')
+  void rowEl.offsetWidth
+  rowEl.classList.add('is-shaking')
 })
 </script>
 
@@ -427,7 +411,20 @@ watch(() => props.status, (status) => {
   height: var(--otp-caret);
   border-radius: 999px;
   background: #fff;
+  transform: translate(calc(var(--caret-x, 0px) - 1px), -50%);
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   animation: otp-blink 1.1s linear infinite;
+}
+
+.otp__row.is-shaking {
+  animation: otp-shake 0.32s ease;
+}
+
+@keyframes otp-shake {
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
 }
 
 @keyframes otp-ring {
