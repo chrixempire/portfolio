@@ -13,7 +13,7 @@ export const site = {
   resumeHref: '/Christian Anyikamadu Frontend Engineer Resume 1.0.pdf?v=3',
   resumeFileName: 'Christian Anyikamadu Frontend Engineer Resume 1.0.pdf',
   socials: [
-    { label: 'LinkedIn', href: 'https://linkedin.com/in/anyikamaduchris' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/chris-anyikamadu-b3997820a' },
     { label: 'Github', href: 'https://github.com/chrixempire' }
   ],
   nav: [
